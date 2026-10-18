@@ -20,7 +20,6 @@ public class BookingDAO {
         conn.setAutoCommit(false);
 
         try {
-            // 1. Verify Flight
             String flightSql = DBConnection.normalizeSql("SELECT flight_id, flight_number, airline_name, fare, available_seats, status FROM flights WHERE flight_id = ?;");
             double baseFare = 0;
             int availableSeats = 0;
@@ -48,7 +47,6 @@ public class BookingDAO {
                 throw new IllegalStateException("Only " + availableSeats + " seats remain on flight " + flightNum + ".");
             }
 
-            // 2. Validate Seat Selection & Concurrency Lock
             Set<String> requestedSeats = new HashSet<>();
             for (Map<String, Object> p : paxDataList) {
                 String sNum = String.valueOf(p.get("seat_number")).trim().toUpperCase();
@@ -57,7 +55,6 @@ public class BookingDAO {
                 }
             }
 
-            // Query seats from DB
             StringBuilder seatQuery = new StringBuilder("SELECT seat_id, seat_number, seat_class, is_booked, price_multiplier FROM seats WHERE flight_id = ? AND UPPER(seat_number) IN (");
             for (int i = 0; i < requestedSeats.size(); i++) {
                 if (i > 0) seatQuery.append(",");
@@ -90,14 +87,12 @@ public class BookingDAO {
                 }
             }
 
-            // Verify all requested seats exist
             for (String sNum : requestedSeats) {
                 if (!seatIdMap.containsKey(sNum)) {
                     throw new IllegalArgumentException("Seat " + sNum + " does not exist on flight " + flightNum + ".");
                 }
             }
 
-            // 3. Atomically lock seats
             String updateSeatSql = DBConnection.normalizeSql("UPDATE seats SET is_booked = 1, version = version + 1 WHERE seat_id = ? AND is_booked = 0;");
             try (PreparedStatement stmt = conn.prepareStatement(updateSeatSql)) {
                 for (String sNum : requestedSeats) {
@@ -109,7 +104,6 @@ public class BookingDAO {
                 }
             }
 
-            // 4. Update available seats on flight
             String updateFlightSql = DBConnection.normalizeSql("UPDATE flights SET available_seats = available_seats - ? WHERE flight_id = ?;");
             try (PreparedStatement stmt = conn.prepareStatement(updateFlightSql)) {
                 stmt.setInt(1, paxDataList.size());
@@ -117,7 +111,6 @@ public class BookingDAO {
                 stmt.executeUpdate();
             }
 
-            // 5. Insert Booking
             String pnr = SecurityUtil.generatePNR();
             String insertBookingSql = DBConnection.normalizeSql("INSERT INTO bookings (pnr, user_id, flight_id, passenger_count, total_fare, booking_status) VALUES (?, ?, ?, ?, ?, 'CONFIRMED');");
             int bookingId = 0;
@@ -136,7 +129,6 @@ public class BookingDAO {
                 }
             }
 
-            // Fallback for getting bookingId if JDBC driver didn't return generated key
             if (bookingId == 0) {
                 try (PreparedStatement s2 = conn.prepareStatement(DBConnection.normalizeSql("SELECT booking_id FROM bookings WHERE pnr = ?;"))) {
                     s2.setString(1, pnr);
@@ -146,7 +138,6 @@ public class BookingDAO {
                 }
             }
 
-            // 6. Insert Passengers
             String insertPaxSql = DBConnection.normalizeSql("INSERT INTO passengers (booking_id, seat_id, first_name, last_name, gender, age, id_number, seat_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
             try (PreparedStatement stmt = conn.prepareStatement(insertPaxSql)) {
                 for (Map<String, Object> p : paxDataList) {
@@ -172,7 +163,6 @@ public class BookingDAO {
                 }
             }
 
-            // 7. Insert Simulated Payment
             String method = paymentDetails != null && paymentDetails.get("payment_method") != null 
                     ? String.valueOf(paymentDetails.get("payment_method")) 
                     : "Credit Card (Simulated)";
@@ -187,7 +177,6 @@ public class BookingDAO {
                 stmt.executeUpdate();
             }
 
-            // Commit ACID transaction
             conn.commit();
             conn.close();
 
@@ -266,7 +255,6 @@ public class BookingDAO {
                     b.setPayment(pay);
                 }
 
-                // Load passengers
                 String paxSql = DBConnection.normalizeSql("SELECT passenger_id, booking_id, seat_id, first_name, last_name, gender, age, id_number, seat_number FROM passengers WHERE booking_id = ? ORDER BY passenger_id ASC;");
                 try (PreparedStatement pStmt = conn.prepareStatement(paxSql)) {
                     pStmt.setInt(1, b.getBookingId());
@@ -335,7 +323,6 @@ public class BookingDAO {
                     f.setDestCity(rs.getString("dest_city"));
                     b.setFlight(f);
 
-                    // Load passengers
                     String paxSql = DBConnection.normalizeSql("SELECT first_name, last_name, seat_number FROM passengers WHERE booking_id = ?;");
                     try (PreparedStatement pStmt = conn.prepareStatement(paxSql)) {
                         pStmt.setInt(1, b.getBookingId());
@@ -393,7 +380,6 @@ public class BookingDAO {
                 throw new IllegalStateException("Reservation " + pnr + " has already been cancelled.");
             }
 
-            // 1. Fetch seat IDs to release
             List<Integer> seatIds = new ArrayList<>();
             String getSeatsSql = DBConnection.normalizeSql("SELECT seat_id FROM passengers WHERE booking_id = ? AND seat_id IS NOT NULL;");
             try (PreparedStatement stmt = conn.prepareStatement(getSeatsSql)) {
@@ -405,7 +391,6 @@ public class BookingDAO {
                 }
             }
 
-            // 2. Release seats in seats table
             if (!seatIds.isEmpty()) {
                 StringBuilder releaseSql = new StringBuilder("UPDATE seats SET is_booked = 0 WHERE seat_id IN (");
                 for (int i = 0; i < seatIds.size(); i++) {
@@ -422,7 +407,6 @@ public class BookingDAO {
                 }
             }
 
-            // 3. Return available seats to flight
             String returnSeatsSql = DBConnection.normalizeSql("UPDATE flights SET available_seats = available_seats + ? WHERE flight_id = ?;");
             try (PreparedStatement stmt = conn.prepareStatement(returnSeatsSql)) {
                 stmt.setInt(1, paxCount);
@@ -430,7 +414,6 @@ public class BookingDAO {
                 stmt.executeUpdate();
             }
 
-            // 4. Update booking record (90% refund policy)
             double refund = Math.round(fare * 0.90 * 100.0) / 100.0;
             String cancelBookingSql = DBConnection.normalizeSql("UPDATE bookings SET booking_status = 'CANCELLED', cancellation_date = CURRENT_TIMESTAMP, refund_amount = ? WHERE booking_id = ?;");
             try (PreparedStatement stmt = conn.prepareStatement(cancelBookingSql)) {
@@ -439,7 +422,6 @@ public class BookingDAO {
                 stmt.executeUpdate();
             }
 
-            // 5. Update payment status to REFUNDED
             String refundPaySql = DBConnection.normalizeSql("UPDATE payments SET payment_status = 'REFUNDED' WHERE booking_id = ?;");
             try (PreparedStatement stmt = conn.prepareStatement(refundPaySql)) {
                 stmt.setInt(1, bookingId);
