@@ -1,9 +1,6 @@
-
 # ✈️ SkyWings Airline Reservation System
 
 A complete, full-stack Airline Reservation System built with **Java 17 + JDBC**, **HTML/CSS/JavaScript**, and **PostgreSQL** (SQLite fallback for offline use).
-
----
 
 ## 📋 Table of Contents
 
@@ -17,21 +14,17 @@ A complete, full-stack Airline Reservation System built with **Java 17 + JDBC**,
 - [Architecture](#architecture)
 - [Troubleshooting](#troubleshooting)
 
----
-
 ## 🛠️ Technology Stack
 
 | Layer      | Technology           |
 |------------|----------------------|
-| Frontend   | HTML5, CSS3, JavaScript (ES6+) — zero external libraries |
+| Frontend   | HTML5, CSS3, JavaScript (ES6+) — no external frontend libraries |
 | Backend    | Java 17 |
 | DB Driver  | JDBC — PostgreSQL driver v42.7.3, SQLite driver v3.45.2 |
 | Database   | PostgreSQL 15+ (primary) / SQLite (automatic fallback) |
 | HTTP Server| `com.sun.net.httpserver.HttpServer` (built-in JDK) |
 
 > **No frameworks used.** No Spring, Hibernate, Flask, Bootstrap, React, jQuery, or any external library beyond the JDBC drivers.
-
----
 
 ## 📁 Project Structure
 
@@ -87,8 +80,6 @@ SPOS miniproject/
 └── bin/                        # Compiled .class files (auto-generated)
 ```
 
----
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -120,8 +111,6 @@ That's it! The app will automatically:
 - Attempt to connect to PostgreSQL on `localhost:5432`
 - Fall back to SQLite (`airline_db.sqlite`) if PostgreSQL is unavailable
 - Create all tables and seed demo data on first run
-
----
 
 ## 🗄️ Database Setup
 
@@ -169,8 +158,6 @@ passengers      — Individual passenger details per booking
 payments        — Simulated payment records per booking
 ```
 
----
-
 ## 🔑 Default Credentials
 
 | Role      | Email                     | Password     |
@@ -178,8 +165,6 @@ payments        — Simulated payment records per booking
 | Admin     | `admin@skywings.com`      | `Admin@123`  |
 | Passenger | `john.doe@example.com`    | `Password@123` |
 | Passenger | `jane.smith@example.com`  | `Password@123` |
-
----
 
 ## 🌟 Features
 
@@ -209,8 +194,6 @@ payments        — Simulated payment records per booking
 - ✅ Session token management (24-hour expiry)
 - ✅ PostgreSQL → SQLite automatic failover
 - ✅ SPA frontend with 15 screens, no page reloads
-
----
 
 ## 📡 API Reference
 
@@ -256,8 +239,6 @@ All endpoints are under `http://localhost:8080/api/`
 | GET  | `/api/admin/tracker` | Bearer (admin) | Seat tracker |
 | GET  | `/api/admin/scheduling?algo=FCFS&quantum=2` | Bearer (admin) | CPU Scheduling Simulation (FCFS & Round Robin) |
 
----
-
 ## 🏗️ Architecture
 
 ```
@@ -277,27 +258,15 @@ PostgreSQL 15+ ← → SQLite (fallback)
 - Authorization: Bearer token in `Authorization` header, role enforced per endpoint
 - SQL injection: 100% parameterized queries, no string concatenation in SQL
 
----
-
 ## 🔧 Manual PowerShell Commands
 
 ```powershell
-# Set Java path
 $env:JAVA_HOME = 'C:\Users\manth\.jdk-17'
 $env:Path = "C:\Users\manth\.jdk-17\bin;$env:Path"
-
-# Compile
 javac -encoding UTF-8 -cp "lib/*" -d bin (Get-ChildItem -Recurse -Filter "*.java" src | % { $_.FullName })
-
-# Run
 java -cp "bin;lib/*" com.airline.AirlineServer
-
-# Reset database
 Remove-Item airline_db.sqlite -ErrorAction SilentlyContinue
-# Then start the server again to recreate
 ```
-
----
 
 ## 🔍 Troubleshooting
 
@@ -321,8 +290,6 @@ Remove-Item airline_db.sqlite -ErrorAction SilentlyContinue
 - The seed flights have dates in the near future; search without a date filter to see all
 - Or search DEL→BOM, BOM→BLR, DEL→DXB etc. (routes in the seed data)
 
----
-
 ## 🗺️ Available Flight Routes (Seed Data)
 
 | Route | Flights |
@@ -337,8 +304,4 @@ Remove-Item airline_db.sqlite -ErrorAction SilentlyContinue
 | DEL → JFK | SW-701 |
 | DEL → SIN | SW-801 |
 
----
-
 *SkyWings Airline Reservation System — Academic Project*
-
-
