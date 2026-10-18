@@ -24,7 +24,6 @@ public class DBConnection {
     public static synchronized void initialize() {
         if (initialized) return;
 
-        // Try PostgreSQL first
         try {
             Class.forName("org.postgresql.Driver");
             DriverManager.setLoginTimeout(3);
@@ -39,7 +38,6 @@ public class DBConnection {
             System.out.println("[DB] PostgreSQL not reachable at " + PG_HOST + ":" + PG_PORT + " (" + e.getMessage() + ")");
         }
 
-        // Fallback to SQLite
         try {
             Class.forName("org.sqlite.JDBC");
             try (Connection conn = DriverManager.getConnection(SQLITE_URL)) {
@@ -214,14 +212,11 @@ public class DBConnection {
                         "payment_status TEXT NOT NULL DEFAULT 'SUCCESS'," +
                         "payment_date DATETIME DEFAULT CURRENT_TIMESTAMP);");
 
-                // Seed Default Users
-                // Admin: Admin@123, John: Password@123
                 st.execute("INSERT INTO users (name, email, password_hash, salt, role, phone) VALUES " +
                         "('System Administrator', 'admin@skywings.com', '7d08e5374f44b9628ae04ad5a812ef1092c86c77ab7182f99be7da42d6fcff79', 'somesaltforadmin', 'admin', '+1-800-555-0199')," +
                         "('John Doe', 'john.doe@example.com', 'f69a00b7195566968c2b2be5a4f4183b6076551f55f0f11e8d70a7f6996e1fe2', 'somesaltforjohn', 'passenger', '+1-555-014-8822')," +
                         "('Jane Smith', 'jane.smith@example.com', 'f69a00b7195566968c2b2be5a4f4183b6076551f55f0f11e8d70a7f6996e1fe2', 'somesaltforjohn', 'passenger', '+1-555-019-3344');");
 
-                // Seed Airports
                 st.execute("INSERT INTO airports (airport_code, airport_name, city, country) VALUES " +
                         "('DEL', 'Indira Gandhi International Airport', 'New Delhi', 'India')," +
                         "('BOM', 'Chhatrapati Shivaji Maharaj International Airport', 'Mumbai', 'India')," +
@@ -231,7 +226,6 @@ public class DBConnection {
                         "('JFK', 'John F. Kennedy International Airport', 'New York', 'United States')," +
                         "('SIN', 'Singapore Changi Airport', 'Singapore', 'Singapore');");
 
-                // Seed dynamic flights relative to today
                 LocalDate today = LocalDate.now();
                 String d0 = today.format(DateTimeFormatter.ISO_LOCAL_DATE);
                 String d1 = today.plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -260,15 +254,12 @@ public class DBConnection {
                             f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7], f[8], f[9], f[10], f[11]));
                 }
 
-                // Populate seats for flights 1 to 13
                 for (int fid = 1; fid <= flights.length; fid++) {
-                    // Business: Rows 1-2, cols A-D (multiplier 1.6)
                     for (int r = 1; r <= 2; r++) {
                         for (String col : new String[]{"A", "B", "C", "D"}) {
                             st.execute(String.format("INSERT INTO seats (flight_id, seat_number, seat_class, is_booked, price_multiplier) VALUES (%d, '%d%s', 'BUSINESS', 0, 1.6)", fid, r, col));
                         }
                     }
-                    // Economy: Rows 3-10, cols A-F (multiplier 1.0)
                     for (int r = 3; r <= 10; r++) {
                         for (String col : new String[]{"A", "B", "C", "D", "E", "F"}) {
                             st.execute(String.format("INSERT INTO seats (flight_id, seat_number, seat_class, is_booked, price_multiplier) VALUES (%d, '%d%s', 'ECONOMY', 0, 1.0)", fid, r, col));
@@ -276,7 +267,6 @@ public class DBConnection {
                     }
                 }
 
-                // Sample demo booking
                 st.execute("UPDATE seats SET is_booked = 1 WHERE flight_id = 1 AND seat_number IN ('1A', '3A');");
                 st.execute("INSERT INTO bookings (booking_id, pnr, user_id, flight_id, booking_date, passenger_count, total_fare, booking_status) " +
                         "VALUES (1, 'SW9K7X', 2, 1, datetime('now', '-2 days'), 2, 11700.0, 'CONFIRMED');");
