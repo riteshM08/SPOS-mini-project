@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyWings Airways - Airline Reservation System</title>
-    <!-- Custom Plain CSS (Zero External Libraries or Frameworks) -->
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/print.css" media="print">
 </head>
 <body>
 
-    <!-- ======================================================================
-         TOP NAVIGATION BAR
-         ====================================================================== -->
     <header class="navbar">
         <div class="nav-container">
             <a class="brand-logo" data-navigate="home">
@@ -29,13 +26,12 @@
             </nav>
 
             <div class="nav-auth-group">
-                <!-- Guest controls (Logged out) -->
+                
                 <div id="nav-guest-group" style="display:flex; gap:10px;">
                     <button class="btn btn-outline-light btn-sm" onclick="App.openModal('modal-login')">Log In</button>
                     <button class="btn btn-primary btn-sm" onclick="App.openModal('modal-register')">Register</button>
                 </div>
 
-                <!-- User Profile controls (Logged in) -->
                 <div id="nav-user-group" style="display:none; align-items:center; gap:12px;">
                     <div class="user-badge">
                         <div class="user-avatar" id="nav-user-avatar">U</div>
@@ -48,15 +44,11 @@
         </div>
     </header>
 
-    <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- ======================================================================
-         VIEW 1: HOME PAGE & FLIGHT SEARCH SECTION
-         ====================================================================== -->
     <main class="main-container">
         <section id="view-home" class="view-section active">
-            <!-- Hero Banner -->
+            
             <div class="hero-banner">
                 <h1 class="hero-title">Experience Premium Air Travel</h1>
                 <p class="hero-subtitle">
@@ -65,7 +57,6 @@
                 </p>
             </div>
 
-            <!-- Prominent Flight Search Section -->
             <div class="search-card-wrapper">
                 <div class="search-box">
                     <form id="flight-search-form">
@@ -81,13 +72,12 @@
                         </div>
 
                         <div class="search-form-grid">
-                            <!-- Source Airport -->
+                            
                             <div class="form-group">
                                 <label class="form-label">Departure From</label>
                                 <select id="search-source" class="form-control" required></select>
                             </div>
 
-                            <!-- Route Swap Button -->
                             <div style="display:flex; align-items:flex-end; gap:8px;">
                                 <div class="form-group" style="flex:1;">
                                     <label class="form-label">Destination To</label>
@@ -96,13 +86,11 @@
                                 <button type="button" id="btn-swap-airports" class="btn btn-outline-light" style="color:var(--sky-blue); border-color:var(--border-color); padding:11px;" title="Swap origin & destination">⇄</button>
                             </div>
 
-                            <!-- Departure Date -->
                             <div class="form-group">
                                 <label class="form-label">Departure Date</label>
                                 <input type="date" id="search-dep-date" class="form-control" required>
                             </div>
 
-                            <!-- Passengers Count -->
                             <div class="form-group">
                                 <label class="form-label">Passengers</label>
                                 <select id="search-passengers" class="form-control">
@@ -115,7 +103,6 @@
                                 </select>
                             </div>
 
-                            <!-- Search Button -->
                             <div>
                                 <button type="submit" class="btn btn-primary" style="height:48px; width:100%;">
                                     Search Flights &rarr;
@@ -126,7 +113,6 @@
                 </div>
             </div>
 
-            <!-- Featured Highlights -->
             <div style="margin-top:60px;">
                 <div class="section-header">
                     <div>
@@ -163,9 +149,6 @@
             </div>
         </section>
 
-        <!-- ==================================================================
-             VIEW 2: FLIGHT SEARCH RESULTS
-             ================================================================== -->
         <section id="view-search-results" class="view-section">
             <div class="section-header" style="margin-top:20px;">
                 <div>
@@ -175,14 +158,12 @@
                 <button class="btn btn-outline" onclick="App.navigate('home')">&larr; Modify Search</button>
             </div>
 
-            <!-- Loading State -->
             <div id="search-loading-state" style="display:none; text-align:center; padding:60px 20px;">
                 <div style="font-size:2rem; margin-bottom:12px; animation:spin 1s infinite linear;">✈</div>
                 <h3 style="color:var(--primary-navy);">Searching available flights...</h3>
                 <p style="color:var(--text-muted);">Querying live seat availability and scheduled routes...</p>
             </div>
 
-            <!-- Empty State -->
             <div id="search-empty-state" style="display:none; text-align:center; padding:60px 20px; background:white; border-radius:12px; border:1px solid var(--border-color);">
                 <div style="font-size:3rem; margin-bottom:16px;">🛫</div>
                 <h3 style="color:var(--primary-navy); margin-bottom:8px;">No Flights Found</h3>
@@ -192,15 +173,11 @@
                 <button class="btn btn-primary" onclick="App.navigate('home')">Change Route or Date</button>
             </div>
 
-            <!-- Results List -->
             <div id="search-results-list" class="flights-list"></div>
         </section>
 
-        <!-- ==================================================================
-             VIEW 3: MULTI-STEP BOOKING FLOW WIZARD
-             ================================================================== -->
         <section id="view-booking-flow" class="view-section" style="margin-top:20px;">
-            <!-- Stepper Progress Header -->
+            
             <div class="booking-stepper">
                 <div class="step-item completed" data-step="1">
                     <div class="step-circle">✓</div>
@@ -224,10 +201,9 @@
                 </div>
             </div>
 
-            <!-- STEP 2 PANEL: SEAT SELECTION -->
             <div id="step-panel-seats">
                 <div class="seat-selection-wrapper">
-                    <!-- Left: Interactive Aircraft Cabin Fuselage -->
+                    
                     <div>
                         <div class="airplane-cabin">
                             <div class="cockpit">
@@ -235,7 +211,6 @@
                                 <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Flight Cockpit</div>
                             </div>
 
-                            <!-- Legend -->
                             <div class="seat-legend">
                                 <div class="legend-item"><div class="seat-box seat-available"></div> Available</div>
                                 <div class="legend-item"><div class="seat-box seat-selected"></div> Selected</div>
@@ -243,12 +218,10 @@
                                 <div class="legend-item"><div class="seat-box seat-booked"></div> Booked</div>
                             </div>
 
-                            <!-- Dynamically Generated Seat Rows -->
                             <div id="cabin-seats-grid"></div>
                         </div>
                     </div>
 
-                    <!-- Right: Sticky Live Booking Summary -->
                     <div>
                         <div class="booking-summary-card">
                             <h3 class="summary-title">Booking Summary</h3>
@@ -290,7 +263,6 @@
                 </div>
             </div>
 
-            <!-- STEP 3 PANEL: PASSENGER INFORMATION -->
             <div id="step-panel-passengers" style="display:none; max-width:900px; margin:0 auto;">
                 <div class="section-header">
                     <div>
@@ -307,7 +279,6 @@
                 </div>
             </div>
 
-            <!-- STEP 4 PANEL: SIMULATED PAYMENT -->
             <div id="step-panel-payment" style="display:none;">
                 <div class="payment-container">
                     <div class="section-header" style="margin-bottom:16px;">
@@ -317,7 +288,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment summary card -->
                     <div style="background:#f8fafc; border-radius:8px; padding:16px; margin-bottom:20px; border:1px solid var(--border-color);">
                         <div class="summary-row"><span>Flight:</span> <strong id="pay-flight-info">SW-101</strong></div>
                         <div class="summary-row"><span>Travelers:</span> <span id="pay-pax-count">1</span></div>
@@ -328,7 +298,6 @@
                         </div>
                     </div>
 
-                    <!-- Quick Demo Card Fill Shortcut -->
                     <div class="demo-fill-banner">
                         <div>
                             <strong>💡 Evaluation Demo Helper:</strong> Fill valid test card credentials with one click.
@@ -336,14 +305,12 @@
                         <button type="button" class="btn btn-sm btn-primary" onclick="App.fillDemoCard()">Auto-Fill Test Card</button>
                     </div>
 
-                    <!-- Payment Methods Tabs -->
                     <div class="payment-methods-tabs">
                         <div class="pay-tab active">💳 Credit / Debit Card</div>
                         <div class="pay-tab">📱 UPI / QR Code</div>
                         <div class="pay-tab">🏦 Net Banking</div>
                     </div>
 
-                    <!-- Card Form -->
                     <form id="form-payment" onsubmit="App.handlePaymentSubmit(event)">
                         <div class="form-group" style="margin-bottom:16px;">
                             <label class="form-label">Card Number</label>
@@ -374,11 +341,10 @@
                 </div>
             </div>
 
-            <!-- STEP 5 PANEL: BOARDING PASS & CONFIRMATION -->
             <div id="step-panel-confirmation" style="display:none;">
                 <div id="boarding-pass-print-area">
                     <div class="boarding-pass-card">
-                        <!-- Pass Header -->
+                        
                         <div class="pass-header">
                             <div>
                                 <div style="display:flex; align-items:center; gap:8px;">
@@ -393,7 +359,6 @@
                             </div>
                         </div>
 
-                        <!-- Pass Body -->
                         <div class="pass-body">
                             <div class="pass-route-row">
                                 <div>
@@ -443,7 +408,6 @@
                             </div>
                         </div>
 
-                        <!-- Barcode Stub -->
                         <div class="barcode-stub">
                             <div>
                                 <div style="font-size:0.8rem; font-weight:700;">ELECTRONIC BOARDING PASS</div>
@@ -454,7 +418,6 @@
                     </div>
                 </div>
 
-                <!-- Post Confirmation Actions -->
                 <div class="no-print" style="display:flex; justify-content:center; gap:16px; margin-top:20px;">
                     <button class="btn btn-outline" onclick="App.printBoardingPass()">
                         🖨️ Print / Download Boarding Pass
@@ -469,9 +432,6 @@
             </div>
         </section>
 
-        <!-- ==================================================================
-             VIEW 4: MY BOOKINGS & BOOKING HISTORY
-             ================================================================== -->
         <section id="view-my-bookings" class="view-section">
             <div class="section-header" style="margin-top:20px;">
                 <div>
@@ -483,7 +443,6 @@
                 </div>
             </div>
 
-            <!-- Direct PNR Quick Search -->
             <div style="background:white; border-radius:10px; padding:16px 20px; border:1px solid var(--border-color); margin-bottom:24px; display:flex; gap:12px; align-items:center;">
                 <label style="font-weight:600; font-size:0.9rem; color:var(--text-muted); white-space:nowrap;">Quick PNR Lookup:</label>
                 <input type="text" id="quick-pnr-input" class="form-control" placeholder="Enter 6-character PNR (e.g. SW9K7X)" style="max-width:280px;">
@@ -492,13 +451,9 @@
                 </button>
             </div>
 
-            <!-- Bookings List -->
             <div id="my-bookings-list" class="flights-list"></div>
         </section>
 
-        <!-- ==================================================================
-             VIEW 5: ADMINISTRATOR DASHBOARD
-             ================================================================== -->
         <section id="view-admin" class="view-section">
             <div class="section-header" style="margin-top:20px;">
                 <div>
@@ -510,7 +465,6 @@
                 </div>
             </div>
 
-            <!-- KPI Metric Cards -->
             <div class="admin-stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon blue">✈</div>
@@ -563,7 +517,6 @@
                 </div>
             </div>
 
-            <!-- Admin Sub-Navigation Tabs -->
             <div class="admin-nav-tabs">
                 <button class="admin-tab-btn active" data-tab="flights">Flight Management</button>
                 <button class="admin-tab-btn" data-tab="bookings">Reservations & Passengers</button>
@@ -571,7 +524,6 @@
                 <button class="admin-tab-btn" data-tab="scheduling">⚡ OS Scheduling (FCFS & Round Robin)</button>
             </div>
 
-            <!-- PANEL A: FLIGHT MANAGEMENT -->
             <div id="admin-panel-flights" class="admin-tab-panel">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:16px;">
                     <input type="text" id="admin-flight-search" class="form-control" placeholder="Search by flight #, airline, city..." style="max-width:320px;" oninput="App.loadAdminFlights()">
@@ -602,7 +554,6 @@
                 </div>
             </div>
 
-            <!-- PANEL B: BOOKINGS & PASSENGERS -->
             <div id="admin-panel-bookings" class="admin-tab-panel" style="display:none;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:16px;">
                     <input type="text" id="admin-booking-search" class="form-control" placeholder="Search by PNR, customer, flight #..." style="max-width:320px;" oninput="App.loadAdminBookings()">
@@ -631,7 +582,6 @@
                 </div>
             </div>
 
-            <!-- PANEL C: SEAT OCCUPANCY TRACKER -->
             <div id="admin-panel-tracker" class="admin-tab-panel" style="display:none;">
                 <div style="margin-bottom:20px; max-width:400px;">
                     <label class="form-label">Select Flight to View Live Cabin Seat Map</label>
@@ -640,7 +590,6 @@
                 <div id="tracker-cabin-display"></div>
             </div>
 
-            <!-- PANEL D: OPERATING SYSTEM CPU SCHEDULING (FCFS & ROUND ROBIN) -->
             <div id="admin-panel-scheduling" class="admin-tab-panel" style="display:none;">
                 <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:24px; margin-bottom:24px;">
                     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:16px;">
@@ -651,7 +600,6 @@
                             </p>
                         </div>
 
-                        <!-- Controls -->
                         <div style="display:flex; gap:12px; align-items:center;">
                             <div>
                                 <label style="font-size:0.8rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Algorithm</label>
@@ -675,7 +623,6 @@
                         </div>
                     </div>
 
-                    <!-- Summary Metrics Cards -->
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin:20px 0;">
                         <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
                             <div style="font-size:0.8rem; color:var(--text-muted);">ALGORITHM TYPE</div>
@@ -695,13 +642,11 @@
                         </div>
                     </div>
 
-                    <!-- Visual Gantt Chart Timeline -->
                     <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:20px;">
                         <h4 style="margin:0 0 12px 0; color:var(--primary-navy);">CPU Execution Gantt Chart Timeline</h4>
                         <div id="sched-gantt-container" style="display:flex; overflow-x:auto; padding:10px 0; border-top:1px solid #f1f5f9; gap:2px;"></div>
                     </div>
 
-                    <!-- Process Execution Table -->
                     <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
                         <h4 style="margin:0 0 12px 0; color:var(--primary-navy);">Process Scheduling Table</h4>
                         <div class="table-responsive">
@@ -728,11 +673,6 @@
         </section>
     </main>
 
-    <!-- ======================================================================
-         MODALS (AUTH, ADD FLIGHT, EDIT FLIGHT)
-         ====================================================================== -->
-
-    <!-- Modal 1: Login -->
     <div id="modal-login" class="modal-backdrop">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -740,7 +680,7 @@
                 <button class="modal-close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- Evaluation Demo Shortcuts -->
+                
                 <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:16px; font-size:0.85rem;">
                     <div style="font-weight:700; color:var(--primary-navy); margin-bottom:6px;">⚡ Quick Demo Login Credentials:</div>
                     <div style="display:flex; gap:8px;">
@@ -772,7 +712,6 @@
         </div>
     </div>
 
-    <!-- Modal 2: Registration -->
     <div id="modal-register" class="modal-backdrop">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -807,7 +746,6 @@
         </div>
     </div>
 
-    <!-- Modal 3: Add Flight (Admin) -->
     <div id="modal-add-flight" class="modal-backdrop">
         <div class="modal-dialog" style="max-width:580px;">
             <div class="modal-header">
@@ -871,7 +809,6 @@
         </div>
     </div>
 
-    <!-- Modal 4: Edit Flight (Admin) -->
     <div id="modal-edit-flight" class="modal-backdrop">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -901,9 +838,6 @@
         </div>
     </div>
 
-    <!-- ======================================================================
-         FOOTER
-         ====================================================================== -->
     <footer class="footer no-print">
         <div class="footer-content">
             <div>
@@ -916,7 +850,6 @@
         </div>
     </footer>
 
-    <!-- Scripts (Plain JavaScript - Zero External Libraries) -->
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
 </body>
