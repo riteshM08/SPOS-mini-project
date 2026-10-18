@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyWings Airways - Airline Reservation System</title>
+    <!-- Custom Plain CSS (Zero External Libraries or Frameworks) -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+
+    <!-- ======================================================================
+         TOP NAVIGATION BAR
+         ====================================================================== -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a class="brand-logo" data-navigate="home">
+                <div class="brand-icon">✈</div>
+                <div class="brand-text">SkyWings <span>Airways</span></div>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a data-navigate="home" class="active">Search Flights</a></li>
+                    <li><a data-navigate="my-bookings">My Bookings</a></li>
+                    <li><a data-navigate="admin" id="nav-admin-link" style="display:none;">Admin Portal</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-auth-group">
+                <!-- Guest controls (Logged out) -->
+                <div id="nav-guest-group" style="display:flex; gap:10px;">
+                    <button class="btn btn-outline-light btn-sm" onclick="App.openModal('modal-login')">Log In</button>
+                    <button class="btn btn-primary btn-sm" onclick="App.openModal('modal-register')">Register</button>
+                </div>
+
+                <!-- User Profile controls (Logged in) -->
+                <div id="nav-user-group" style="display:none; align-items:center; gap:12px;">
+                    <div class="user-badge">
+                        <div class="user-avatar" id="nav-user-avatar">U</div>
+                        <span id="nav-user-name" style="font-weight:600; font-size:0.9rem;">Passenger</span>
+                        <span id="nav-user-role" class="role-pill role-passenger">passenger</span>
+                    </div>
+                    <button class="btn btn-outline-light btn-sm" onclick="App.logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ======================================================================
+         VIEW 1: HOME PAGE & FLIGHT SEARCH SECTION
+         ====================================================================== -->
+    <main class="main-container">
+        <section id="view-home" class="view-section active">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <h1 class="hero-title">Experience Premium Air Travel</h1>
+                <p class="hero-subtitle">
+                    Book flights across domestic and international routes with instant seat confirmation,
+                    transparent fares, and seamless ticket management.
+                </p>
+            </div>
+
+            <!-- Prominent Flight Search Section -->
+            <div class="search-card-wrapper">
+                <div class="search-box">
+                    <form id="flight-search-form">
+                        <div class="trip-type-toggle">
+                            <label>
+                                <input type="radio" name="trip-type" value="oneway" checked>
+                                <span>One-Way</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="trip-type" value="roundtrip">
+                                <span>Round-Trip</span>
+                            </label>
+                        </div>
+
+                        <div class="search-form-grid">
+                            <!-- Source Airport -->
+                            <div class="form-group">
+                                <label class="form-label">Departure From</label>
+                                <select id="search-source" class="form-control" required></select>
+                            </div>
+
+                            <!-- Route Swap Button -->
+                            <div style="display:flex; align-items:flex-end; gap:8px;">
+                                <div class="form-group" style="flex:1;">
+                                    <label class="form-label">Destination To</label>
+                                    <select id="search-dest" class="form-control" required></select>
+                                </div>
+                                <button type="button" id="btn-swap-airports" class="btn btn-outline-light" style="color:var(--sky-blue); border-color:var(--border-color); padding:11px;" title="Swap origin & destination">⇄</button>
+                            </div>
+
+                            <!-- Departure Date -->
+                            <div class="form-group">
+                                <label class="form-label">Departure Date</label>
+                                <input type="date" id="search-dep-date" class="form-control" required>
+                            </div>
+
+                            <!-- Passengers Count -->
+                            <div class="form-group">
+                                <label class="form-label">Passengers</label>
+                                <select id="search-passengers" class="form-control">
+                                    <option value="1" selected>1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4 Passengers</option>
+                                    <option value="5">5 Passengers</option>
+                                    <option value="6">6 Passengers</option>
+                                </select>
+                            </div>
+
+                            <!-- Search Button -->
+                            <div>
+                                <button type="submit" class="btn btn-primary" style="height:48px; width:100%;">
+                                    Search Flights &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Featured Highlights -->
+            <div style="margin-top:60px;">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Why Fly with SkyWings Airways</h2>
+                        <p class="section-subtitle">A state-of-the-art reservation experience powered by high-concurrency database integrity</p>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+                    <div style="background:white; padding:28px; border-radius:12px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
+                        <div style="font-size:2rem; color:var(--sky-blue); margin-bottom:12px;">🛡️</div>
+                        <h3 style="font-size:1.15rem; color:var(--primary-navy); margin-bottom:8px;">Zero Double-Booking Guarantee</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">
+                            Engineered with ACID transactional locks to guarantee that seats cannot be double-booked even during peak concurrent traffic.
+                        </p>
+                    </div>
+
+                    <div style="background:white; padding:28px; border-radius:12px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
+                        <div style="font-size:2rem; color:var(--sky-blue); margin-bottom:12px;">💺</div>
+                        <h3 style="font-size:1.15rem; color:var(--primary-navy); margin-bottom:8px;">Live Interactive Cabin Map</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">
+                            Choose your preferred window, aisle, or business class seat on our interactive aircraft cabin visualizer with real-time availability.
+                        </p>
+                    </div>
+
+                    <div style="background:white; padding:28px; border-radius:12px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm);">
+                        <div style="font-size:2rem; color:var(--sky-blue); margin-bottom:12px;">🔄</div>
+                        <h3 style="font-size:1.15rem; color:var(--primary-navy); margin-bottom:8px;">Instant 90% Refund Policy</h3>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">
+                            Plans changed? Cancel any eligible reservation in seconds with automatic seat release and instant simulated refund accounting.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 2: FLIGHT SEARCH RESULTS
+             ================================================================== -->
+        <section id="view-search-results" class="view-section">
+            <div class="section-header" style="margin-top:20px;">
+                <div>
+                    <h2 class="section-title" id="search-summary-title">Available Flights</h2>
+                    <p class="section-subtitle" id="search-summary-sub">Showing matching scheduled flights</p>
+                </div>
+                <button class="btn btn-outline" onclick="App.navigate('home')">&larr; Modify Search</button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="search-loading-state" style="display:none; text-align:center; padding:60px 20px;">
+                <div style="font-size:2rem; margin-bottom:12px; animation:spin 1s infinite linear;">✈</div>
+                <h3 style="color:var(--primary-navy);">Searching available flights...</h3>
+                <p style="color:var(--text-muted);">Querying live seat availability and scheduled routes...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="search-empty-state" style="display:none; text-align:center; padding:60px 20px; background:white; border-radius:12px; border:1px solid var(--border-color);">
+                <div style="font-size:3rem; margin-bottom:16px;">🛫</div>
+                <h3 style="color:var(--primary-navy); margin-bottom:8px;">No Flights Found</h3>
+                <p style="color:var(--text-muted); margin-bottom:20px;">
+                    We couldn't find any scheduled flights matching <strong id="search-route-summary">your route</strong> with sufficient available seats.
+                </p>
+                <button class="btn btn-primary" onclick="App.navigate('home')">Change Route or Date</button>
+            </div>
+
+            <!-- Results List -->
+            <div id="search-results-list" class="flights-list"></div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 3: MULTI-STEP BOOKING FLOW WIZARD
+             ================================================================== -->
+        <section id="view-booking-flow" class="view-section" style="margin-top:20px;">
+            <!-- Stepper Progress Header -->
+            <div class="booking-stepper">
+                <div class="step-item completed" data-step="1">
+                    <div class="step-circle">✓</div>
+                    <span class="step-label">1. Flight</span>
+                </div>
+                <div class="step-item active" data-step="2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">2. Seat Selection</span>
+                </div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">3. Passenger Info</span>
+                </div>
+                <div class="step-item" data-step="4">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">4. Payment</span>
+                </div>
+                <div class="step-item" data-step="5">
+                    <div class="step-circle">5</div>
+                    <span class="step-label">5. Boarding Pass</span>
+                </div>
+            </div>
+
+            <!-- STEP 2 PANEL: SEAT SELECTION -->
+            <div id="step-panel-seats">
+                <div class="seat-selection-wrapper">
+                    <!-- Left: Interactive Aircraft Cabin Fuselage -->
+                    <div>
+                        <div class="airplane-cabin">
+                            <div class="cockpit">
+                                <div style="font-size:1.8rem;">✈</div>
+                                <div style="font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Flight Cockpit</div>
+                            </div>
+
+                            <!-- Legend -->
+                            <div class="seat-legend">
+                                <div class="legend-item"><div class="seat-box seat-available"></div> Available</div>
+                                <div class="legend-item"><div class="seat-box seat-selected"></div> Selected</div>
+                                <div class="legend-item"><div class="seat-box seat-business"></div> Business (1.6x)</div>
+                                <div class="legend-item"><div class="seat-box seat-booked"></div> Booked</div>
+                            </div>
+
+                            <!-- Dynamically Generated Seat Rows -->
+                            <div id="cabin-seats-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Sticky Live Booking Summary -->
+                    <div>
+                        <div class="booking-summary-card">
+                            <h3 class="summary-title">Booking Summary</h3>
+                            <div class="summary-row">
+                                <span>Flight:</span>
+                                <strong id="summary-flight-number">SW-101</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Route:</span>
+                                <strong id="summary-route">DEL &rarr; BOM</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Departure:</span>
+                                <span id="summary-date">Today</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Selected Seats:</span>
+                                <strong id="summary-seats-list" style="color:var(--sky-blue);">None selected</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Base Fare:</span>
+                                <span id="summary-base-fare">₹0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Fare:</span>
+                                <span id="summary-total-fare">₹0</span>
+                            </div>
+
+                            <div style="margin-top:24px;">
+                                <button id="btn-continue-to-passengers" class="btn btn-primary" style="width:100%;" onclick="App.proceedToPassengers()" disabled>
+                                    Continue to Passenger Details &rarr;
+                                </button>
+                                <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="App.navigate('search-results')">
+                                    &larr; Choose Different Flight
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 PANEL: PASSENGER INFORMATION -->
+            <div id="step-panel-passengers" style="display:none; max-width:900px; margin:0 auto;">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Passenger Information</h2>
+                        <p class="section-subtitle">Please provide traveler details as they appear on official government identification.</p>
+                    </div>
+                </div>
+
+                <div id="passengers-form-container"></div>
+
+                <div style="display:flex; justify-content:space-between; margin-top:24px;">
+                    <button class="btn btn-outline" onclick="App.setBookingStep(2)">&larr; Back to Seat Map</button>
+                    <button class="btn btn-primary" onclick="App.proceedToPayment()">Proceed to Simulated Payment &rarr;</button>
+                </div>
+            </div>
+
+            <!-- STEP 4 PANEL: SIMULATED PAYMENT -->
+            <div id="step-panel-payment" style="display:none;">
+                <div class="payment-container">
+                    <div class="section-header" style="margin-bottom:16px;">
+                        <div>
+                            <h2 class="section-title" style="font-size:1.35rem;">Simulated Payment Terminal</h2>
+                            <p class="section-subtitle">Academic simulation &mdash; no real charges or financial data processed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment summary card -->
+                    <div style="background:#f8fafc; border-radius:8px; padding:16px; margin-bottom:20px; border:1px solid var(--border-color);">
+                        <div class="summary-row"><span>Flight:</span> <strong id="pay-flight-info">SW-101</strong></div>
+                        <div class="summary-row"><span>Travelers:</span> <span id="pay-pax-count">1</span></div>
+                        <div class="summary-row"><span>Assigned Seats:</span> <strong id="pay-seats-list" style="color:var(--sky-blue);">1A</strong></div>
+                        <div class="summary-row total" style="margin-top:8px; padding-top:8px;">
+                            <span>Total Payable Amount:</span>
+                            <span id="pay-amount-total" style="color:var(--primary-navy);">₹0</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Demo Card Fill Shortcut -->
+                    <div class="demo-fill-banner">
+                        <div>
+                            <strong>💡 Evaluation Demo Helper:</strong> Fill valid test card credentials with one click.
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="App.fillDemoCard()">Auto-Fill Test Card</button>
+                    </div>
+
+                    <!-- Payment Methods Tabs -->
+                    <div class="payment-methods-tabs">
+                        <div class="pay-tab active">💳 Credit / Debit Card</div>
+                        <div class="pay-tab">📱 UPI / QR Code</div>
+                        <div class="pay-tab">🏦 Net Banking</div>
+                    </div>
+
+                    <!-- Card Form -->
+                    <form id="form-payment" onsubmit="App.handlePaymentSubmit(event)">
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" id="card-number" class="form-control" placeholder="4532 8841 9021 7742" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label class="form-label">Cardholder Name</label>
+                            <input type="text" id="card-name" class="form-control" placeholder="Full Name as on card" required>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CVV / CVC</label>
+                                <input type="password" id="card-cvv" class="form-control" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <button type="button" class="btn btn-outline" onclick="App.setBookingStep(3)">&larr; Back</button>
+                            <button type="submit" id="btn-confirm-payment" class="btn btn-primary btn-lg">
+                                Pay & Confirm Reservation &rarr;
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- STEP 5 PANEL: BOARDING PASS & CONFIRMATION -->
+            <div id="step-panel-confirmation" style="display:none;">
+                <div id="boarding-pass-print-area">
+                    <div class="boarding-pass-card">
+                        <!-- Pass Header -->
+                        <div class="pass-header">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:1.5rem;">✈</span>
+                                    <strong style="font-size:1.3rem;">SkyWings Airways</strong>
+                                </div>
+                                <div style="font-size:0.85rem; color:#cbd5e1; margin-top:2px;">Official Electronic Boarding Pass & Confirmation</div>
+                            </div>
+                            <div class="pass-pnr-box">
+                                <div class="pass-pnr-label">Booking Reference / PNR</div>
+                                <div class="pass-pnr-value" id="confirm-pnr">SWXXXX</div>
+                            </div>
+                        </div>
+
+                        <!-- Pass Body -->
+                        <div class="pass-body">
+                            <div class="pass-route-row">
+                                <div>
+                                    <div class="detail-item-label">FLIGHT</div>
+                                    <div class="detail-item-val" id="confirm-airline">SkyWings SW-101</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">ROUTE</div>
+                                    <div class="detail-item-val" id="confirm-route" style="color:var(--sky-blue);">DEL &rarr; BOM</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">DEPARTURE</div>
+                                    <div class="detail-item-val" id="confirm-dep-time">--:--</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">ARRIVAL</div>
+                                    <div class="detail-item-val" id="confirm-arr-time">--:--</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">STATUS</div>
+                                    <div class="detail-item-val" style="color:var(--success);">CONFIRMED</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:24px;">
+                                <div class="detail-item-label" style="margin-bottom:8px;">PASSENGER & ASSIGNED SEATS</div>
+                                <ul id="confirm-pax-list" style="list-style:none;"></ul>
+                            </div>
+
+                            <div class="pass-details-grid">
+                                <div>
+                                    <div class="detail-item-label">TOTAL FARE PAID</div>
+                                    <div class="detail-item-val" id="confirm-total-fare">₹0.00</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">PAYMENT METHOD</div>
+                                    <div class="detail-item-val">Credit Card (Simulated)</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">TRANSACTION REF</div>
+                                    <div class="detail-item-val" id="confirm-tx-ref" style="font-family:monospace; font-size:0.9rem;">TXN-XXXX</div>
+                                </div>
+                                <div>
+                                    <div class="detail-item-label">BAGGAGE ALLOWANCE</div>
+                                    <div class="detail-item-val">Cabin 7kg + Check-in 15kg</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Barcode Stub -->
+                        <div class="barcode-stub">
+                            <div>
+                                <div style="font-size:0.8rem; font-weight:700;">ELECTRONIC BOARDING PASS</div>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Please present this ticket along with a valid ID at check-in.</div>
+                            </div>
+                            <div class="barcode-lines"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Confirmation Actions -->
+                <div class="no-print" style="display:flex; justify-content:center; gap:16px; margin-top:20px;">
+                    <button class="btn btn-outline" onclick="App.printBoardingPass()">
+                        🖨️ Print / Download Boarding Pass
+                    </button>
+                    <button class="btn btn-primary" onclick="App.navigate('my-bookings')">
+                        View in My Bookings
+                    </button>
+                    <button class="btn btn-outline" onclick="App.navigate('home')">
+                        Book Another Flight
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 4: MY BOOKINGS & BOOKING HISTORY
+             ================================================================== -->
+        <section id="view-my-bookings" class="view-section">
+            <div class="section-header" style="margin-top:20px;">
+                <div>
+                    <h2 class="section-title">My Flight Reservations</h2>
+                    <p class="section-subtitle">Manage upcoming trips, view e-tickets, and process ticket cancellations.</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-sm" onclick="App.navigate('home')">+ Book New Flight</button>
+                </div>
+            </div>
+
+            <!-- Direct PNR Quick Search -->
+            <div style="background:white; border-radius:10px; padding:16px 20px; border:1px solid var(--border-color); margin-bottom:24px; display:flex; gap:12px; align-items:center;">
+                <label style="font-weight:600; font-size:0.9rem; color:var(--text-muted); white-space:nowrap;">Quick PNR Lookup:</label>
+                <input type="text" id="quick-pnr-input" class="form-control" placeholder="Enter 6-character PNR (e.g. SW9K7X)" style="max-width:280px;">
+                <button class="btn btn-outline btn-sm" onclick="const v = document.getElementById('quick-pnr-input').value.trim(); if(v) App.viewBookingDetails(v); else App.showToast('Please enter a PNR code.', 'warning');">
+                    Lookup Ticket
+                </button>
+            </div>
+
+            <!-- Bookings List -->
+            <div id="my-bookings-list" class="flights-list"></div>
+        </section>
+
+        <!-- ==================================================================
+             VIEW 5: ADMINISTRATOR DASHBOARD
+             ================================================================== -->
+        <section id="view-admin" class="view-section">
+            <div class="section-header" style="margin-top:20px;">
+                <div>
+                    <h2 class="section-title">Flight Operations & Admin Dashboard</h2>
+                    <p class="section-subtitle">System management, live seat trackers, schedule creation, and passenger manifest oversight.</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="App.openAddFlightModal()">+ Add New Flight</button>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards -->
+            <div class="admin-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">✈</div>
+                    <div>
+                        <div class="stat-val" id="stat-total-flights">0</div>
+                        <div class="stat-title">Total Flights</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">🎫</div>
+                    <div>
+                        <div class="stat-val" id="stat-total-bookings">0</div>
+                        <div class="stat-title">Total Bookings</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">₹</div>
+                    <div>
+                        <div class="stat-val" id="stat-total-revenue">₹0</div>
+                        <div class="stat-title">Revenue (Confirmed)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">📊</div>
+                    <div>
+                        <div class="stat-val" id="stat-occupancy-rate">0%</div>
+                        <div class="stat-title">Seat Occupancy</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div>
+                        <div class="stat-val" id="stat-confirmed-bookings">0</div>
+                        <div class="stat-title">Confirmed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">✗</div>
+                    <div>
+                        <div class="stat-val" id="stat-cancelled-bookings">0</div>
+                        <div class="stat-title">Cancelled</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">👤</div>
+                    <div>
+                        <div class="stat-val" id="stat-total-users">0</div>
+                        <div class="stat-title">Registered Users</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Sub-Navigation Tabs -->
+            <div class="admin-nav-tabs">
+                <button class="admin-tab-btn active" data-tab="flights">Flight Management</button>
+                <button class="admin-tab-btn" data-tab="bookings">Reservations & Passengers</button>
+                <button class="admin-tab-btn" data-tab="tracker">Seat Occupancy Tracker</button>
+                <button class="admin-tab-btn" data-tab="scheduling">⚡ OS Scheduling (FCFS & Round Robin)</button>
+            </div>
+
+            <!-- PANEL A: FLIGHT MANAGEMENT -->
+            <div id="admin-panel-flights" class="admin-tab-panel">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:16px;">
+                    <input type="text" id="admin-flight-search" class="form-control" placeholder="Search by flight #, airline, city..." style="max-width:320px;" oninput="App.loadAdminFlights()">
+                    <select id="admin-flight-filter-status" class="form-control" style="max-width:180px;" onchange="App.loadAdminFlights()">
+                        <option value="ALL">All Statuses</option>
+                        <option value="SCHEDULED">Scheduled</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Flight No</th>
+                                <th>Airline</th>
+                                <th>Route</th>
+                                <th>Departure Time</th>
+                                <th>Base Fare</th>
+                                <th>Occupancy</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-flights-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PANEL B: BOOKINGS & PASSENGERS -->
+            <div id="admin-panel-bookings" class="admin-tab-panel" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:16px;">
+                    <input type="text" id="admin-booking-search" class="form-control" placeholder="Search by PNR, customer, flight #..." style="max-width:320px;" oninput="App.loadAdminBookings()">
+                    <select id="admin-booking-filter-status" class="form-control" style="max-width:180px;" onchange="App.loadAdminBookings()">
+                        <option value="ALL">All Bookings</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>PNR / Date</th>
+                                <th>Customer</th>
+                                <th>Flight</th>
+                                <th>Seats</th>
+                                <th>Total Paid</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-bookings-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PANEL C: SEAT OCCUPANCY TRACKER -->
+            <div id="admin-panel-tracker" class="admin-tab-panel" style="display:none;">
+                <div style="margin-bottom:20px; max-width:400px;">
+                    <label class="form-label">Select Flight to View Live Cabin Seat Map</label>
+                    <select id="tracker-flight-select" class="form-control" onchange="App.handleTrackerFlightChange()"></select>
+                </div>
+                <div id="tracker-cabin-display"></div>
+            </div>
+
+            <!-- PANEL D: OPERATING SYSTEM CPU SCHEDULING (FCFS & ROUND ROBIN) -->
+            <div id="admin-panel-scheduling" class="admin-tab-panel" style="display:none;">
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:24px; margin-bottom:24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:16px;">
+                        <div>
+                            <h3 style="color:var(--primary-navy); margin:0;">Operating System CPU Scheduling Simulator</h3>
+                            <p style="color:var(--text-muted); margin:4px 0 0 0; font-size:0.9rem;">
+                                Simulating airline backend process execution using <strong>FCFS (First Come, First Served)</strong> and <strong>Round Robin (RR)</strong>.
+                            </p>
+                        </div>
+
+                        <!-- Controls -->
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <div>
+                                <label style="font-size:0.8rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Algorithm</label>
+                                <select id="sched-algo-select" class="form-control" style="width:220px;" onchange="App.handleSchedulingAlgoChange()">
+                                    <option value="FCFS">1. FCFS (First Come, First Served)</option>
+                                    <option value="RR">2. Round Robin (RR)</option>
+                                </select>
+                            </div>
+
+                            <div id="sched-quantum-wrap" style="display:none;">
+                                <label style="font-size:0.8rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Time Quantum (Slice)</label>
+                                <select id="sched-quantum-select" class="form-control" style="width:110px;" onchange="App.loadSchedulingSimulation()">
+                                    <option value="1">1 ms</option>
+                                    <option value="2" selected>2 ms</option>
+                                    <option value="3">3 ms</option>
+                                    <option value="4">4 ms</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary" style="margin-top:20px;" onclick="App.loadSchedulingSimulation()">▶ Run Simulation</button>
+                        </div>
+                    </div>
+
+                    <!-- Summary Metrics Cards -->
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin:20px 0;">
+                        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <div style="font-size:0.8rem; color:var(--text-muted);">ALGORITHM TYPE</div>
+                            <div id="sched-type-val" style="font-size:1.1rem; font-weight:700; color:var(--primary-navy); margin-top:4px;">Non-Preemptive</div>
+                        </div>
+                        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <div style="font-size:0.8rem; color:var(--text-muted);">AVERAGE WAITING TIME (AWT)</div>
+                            <div id="sched-awt-val" style="font-size:1.4rem; font-weight:800; color:var(--sky-blue); margin-top:4px;">0 ms</div>
+                        </div>
+                        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <div style="font-size:0.8rem; color:var(--text-muted);">AVERAGE TURNAROUND TIME (ATAT)</div>
+                            <div id="sched-atat-val" style="font-size:1.4rem; font-weight:800; color:var(--success); margin-top:4px;">0 ms</div>
+                        </div>
+                        <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                            <div style="font-size:0.8rem; color:var(--text-muted);">TOTAL CPU COMPLETION TIME</div>
+                            <div id="sched-total-time-val" style="font-size:1.4rem; font-weight:800; color:#3b82f6; margin-top:4px;">0 ms</div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Gantt Chart Timeline -->
+                    <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:20px;">
+                        <h4 style="margin:0 0 12px 0; color:var(--primary-navy);">CPU Execution Gantt Chart Timeline</h4>
+                        <div id="sched-gantt-container" style="display:flex; overflow-x:auto; padding:10px 0; border-top:1px solid #f1f5f9; gap:2px;"></div>
+                    </div>
+
+                    <!-- Process Execution Table -->
+                    <div style="background:white; padding:16px; border-radius:8px; border:1px solid #e2e8f0;">
+                        <h4 style="margin:0 0 12px 0; color:var(--primary-navy);">Process Scheduling Table</h4>
+                        <div class="table-responsive">
+                            <table class="data-table" style="font-size:0.85rem;">
+                                <thead>
+                                    <tr>
+                                        <th>PID</th>
+                                        <th>Airline Task Name</th>
+                                        <th>Arrival Time (AT)</th>
+                                        <th>Burst Time (BT)</th>
+                                        <th>Completion Time (CT)</th>
+                                        <th>Turnaround Time (TAT)</th>
+                                        <th>Waiting Time (WT)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sched-process-table-body">
+                                    <tr><td colspan="7" style="text-align:center;">Loading process schedule...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ======================================================================
+         MODALS (AUTH, ADD FLIGHT, EDIT FLIGHT)
+         ====================================================================== -->
+
+    <!-- Modal 1: Login -->
+    <div id="modal-login" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Passenger & Admin Login</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Evaluation Demo Shortcuts -->
+                <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:16px; font-size:0.85rem;">
+                    <div style="font-weight:700; color:var(--primary-navy); margin-bottom:6px;">⚡ Quick Demo Login Credentials:</div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="App.fillDemoLogin('admin@skywings.com', 'Admin@123')">
+                            Admin Account
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline" onclick="App.fillDemoLogin('john.doe@example.com', 'Password@123')">
+                            Passenger Account
+                        </button>
+                    </div>
+                </div>
+
+                <form id="form-login">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="user@example.com" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:14px;">Log In</button>
+                </form>
+
+                <div style="text-align:center; font-size:0.85rem; color:var(--text-muted);">
+                    Don't have an account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-register')">Register here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Registration -->
+    <div id="modal-register" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Create Passenger Account</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-register">
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="reg-name" class="form-control" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="reg-email" class="form-control" placeholder="john.doe@example.com" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" id="reg-phone" class="form-control" placeholder="+1-555-0199">
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label class="form-label">Password (Min 6 chars)</label>
+                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" minlength="6" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:14px;">Create Passenger Account</button>
+                </form>
+
+                <div style="text-align:center; font-size:0.85rem; color:var(--text-muted);">
+                    Already have an account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-login')">Log In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Add Flight (Admin) -->
+    <div id="modal-add-flight" class="modal-backdrop">
+        <div class="modal-dialog" style="max-width:580px;">
+            <div class="modal-header">
+                <h3>Create New Scheduled Flight</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-flight" onsubmit="App.handleAddFlightSubmit(event)">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div class="form-group">
+                            <label class="form-label">Flight Number</label>
+                            <input type="text" id="admin-flight-number" class="form-control" placeholder="SW-901" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Airline Name</label>
+                            <input type="text" id="admin-flight-airline" class="form-control" value="SkyWings Airways" required>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div class="form-group">
+                            <label class="form-label">Origin Airport</label>
+                            <select id="admin-flight-source" class="form-control" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Destination Airport</label>
+                            <select id="admin-flight-dest" class="form-control" required></select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div class="form-group">
+                            <label class="form-label">Departure DateTime</label>
+                            <input type="text" id="admin-flight-dep-time" class="form-control" placeholder="YYYY-MM-DD HH:MM:SS" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Arrival DateTime</label>
+                            <input type="text" id="admin-flight-arr-time" class="form-control" placeholder="YYYY-MM-DD HH:MM:SS" required>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+                        <div class="form-group">
+                            <label class="form-label">Base Fare (₹)</label>
+                            <input type="number" id="admin-flight-fare" class="form-control" placeholder="4500" min="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Aircraft Model</label>
+                            <input type="text" id="admin-flight-model" class="form-control" value="Boeing 737-800">
+                        </div>
+                    </div>
+                    <input type="hidden" id="admin-flight-seats" value="56">
+
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">
+                        ℹ️ 56 seats (8 Business + 48 Economy) will automatically be generated in the database for this flight.
+                    </p>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Create Flight & Generate Seats</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Edit Flight (Admin) -->
+    <div id="modal-edit-flight" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Update Flight Details</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-flight" onsubmit="App.handleEditFlightSubmit(event)">
+                    <input type="hidden" id="edit-flight-id">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label class="form-label">Base Fare (₹)</label>
+                        <input type="number" id="edit-flight-fare" class="form-control" min="100" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label class="form-label">Operational Status</label>
+                        <select id="edit-flight-status" class="form-control">
+                            <option value="SCHEDULED">SCHEDULED</option>
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="DELAYED">DELAYED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         FOOTER
+         ====================================================================== -->
+    <footer class="footer no-print">
+        <div class="footer-content">
+            <div>
+                <strong>SkyWings Airways</strong> &mdash; Airline Reservation System
+                <div style="font-size:0.75rem; margin-top:4px;">Built with Java 17, JDBC, PostgreSQL &amp; Modern Vanilla HTML5/CSS3/JS</div>
+            </div>
+            <div>
+                System Status: <span style="color:var(--success);">● Active &amp; Operational</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts (Plain JavaScript - Zero External Libraries) -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+/* ==========================================================================
+   BOARDING PASS PRINT STYLESHEET
+   Clean, printable airline ticket format
+   ========================================================================== */
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #boarding-pass-print-area, #boarding-pass-print-area * {
+        visibility: visible;
+    }
+
+    #boarding-pass-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        background: white !important;
+        color: #0f172a !important;
+        box-shadow: none !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .ticket-container {
+        border: 2px dashed #0284c7 !important;
+        page-break-inside: avoid;
+    }
+}
