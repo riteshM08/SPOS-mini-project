@@ -46,7 +46,7 @@ const App = {
         } else if (viewId === 'admin') {
             if (!API.isAdmin()) {
                 this.showToast('Administrator privileges required.', 'error');
-                this.openModal('modal-login');
+                this.openModal('modal-admin-login');
                 this.navigate('home');
                 return;
             }
@@ -89,9 +89,14 @@ const App = {
             });
         }
 
-        const loginForm = document.getElementById('form-login');
-        if (loginForm) {
-            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        const passengerLoginForm = document.getElementById('form-passenger-login');
+        if (passengerLoginForm) {
+            passengerLoginForm.addEventListener('submit', (e) => this.handleLogin(e, 'passenger', 'passenger'));
+        }
+
+        const adminLoginForm = document.getElementById('form-admin-login');
+        if (adminLoginForm) {
+            adminLoginForm.addEventListener('submit', (e) => this.handleLogin(e, 'admin', 'admin'));
         }
 
         const regForm = document.getElementById('form-register');
@@ -182,17 +187,19 @@ const App = {
         }
     },
 
-    async handleLogin(e) {
+    async handleLogin(e, requiredRole, loginType) {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
+        const prefix = loginType === 'admin' ? 'admin-login' : 'passenger-login';
+        const email = document.getElementById(`${prefix}-email`).value;
+        const password = document.getElementById(`${prefix}-password`).value;
         const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalButtonText = loginType === 'admin' ? 'Log In as Admin' : 'Log In as Passenger';
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Authenticating...';
 
         try {
-            const res = await API.login(email, password);
+            const res = await API.login(email, password, requiredRole);
             this.showToast(`Welcome back, ${res.user.name}!`, 'success');
             this.closeModals();
             this.updateAuthUI();
@@ -208,7 +215,7 @@ const App = {
             this.showToast(err.message, 'error');
         } finally {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Log In';
+            submitBtn.textContent = originalButtonText;
         }
     },
 
@@ -387,7 +394,7 @@ const App = {
     async startBookingFlow(flightId) {
         if (!API.isAuthenticated()) {
             this.showToast('Please log in or register to book a ticket.', 'info');
-            this.openModal('modal-login');
+            this.openModal('modal-passenger-login');
             return;
         }
 
