@@ -1,10 +1,4 @@
--- ============================================================================
--- AIRLINE RESERVATION SYSTEM (ARS)
--- PostgreSQL Database Schema
--- Normalized relational database schema with constraints, indexes & foreign keys
--- ============================================================================
 
--- Drop existing tables in reverse dependency order
 DROP TABLE IF EXISTS payments CASCADE;
 DROP TABLE IF EXISTS passengers CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;
@@ -13,7 +7,6 @@ DROP TABLE IF EXISTS flights CASCADE;
 DROP TABLE IF EXISTS airports CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- 1. USERS TABLE
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -28,7 +21,6 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
 
--- 2. AIRPORTS TABLE
 CREATE TABLE airports (
     airport_id SERIAL PRIMARY KEY,
     airport_code VARCHAR(3) UNIQUE NOT NULL,
@@ -40,7 +32,6 @@ CREATE TABLE airports (
 CREATE INDEX idx_airports_code ON airports(airport_code);
 CREATE INDEX idx_airports_city ON airports(city);
 
--- 3. FLIGHTS TABLE
 CREATE TABLE flights (
     flight_id SERIAL PRIMARY KEY,
     flight_number VARCHAR(20) UNIQUE NOT NULL,
@@ -63,7 +54,6 @@ CREATE TABLE flights (
 CREATE INDEX idx_flights_search ON flights(source_airport_id, destination_airport_id, departure_time, status);
 CREATE INDEX idx_flights_number ON flights(flight_number);
 
--- 4. SEATS TABLE
 CREATE TABLE seats (
     seat_id SERIAL PRIMARY KEY,
     flight_id INT NOT NULL REFERENCES flights(flight_id) ON DELETE CASCADE,
@@ -77,7 +67,6 @@ CREATE TABLE seats (
 
 CREATE INDEX idx_seats_flight_status ON seats(flight_id, is_booked);
 
--- 5. BOOKINGS TABLE
 CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
     pnr VARCHAR(10) UNIQUE NOT NULL,
@@ -95,7 +84,6 @@ CREATE INDEX idx_bookings_pnr ON bookings(pnr);
 CREATE INDEX idx_bookings_user ON bookings(user_id);
 CREATE INDEX idx_bookings_flight ON bookings(flight_id);
 
--- 6. PASSENGERS TABLE
 CREATE TABLE passengers (
     passenger_id SERIAL PRIMARY KEY,
     booking_id INT NOT NULL REFERENCES bookings(booking_id) ON DELETE CASCADE,
@@ -110,7 +98,6 @@ CREATE TABLE passengers (
 
 CREATE INDEX idx_passengers_booking ON passengers(booking_id);
 
--- 7. PAYMENTS TABLE
 CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
     booking_id INT NOT NULL REFERENCES bookings(booking_id) ON DELETE CASCADE,
