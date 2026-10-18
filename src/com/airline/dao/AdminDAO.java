@@ -15,13 +15,11 @@ public class AdminDAO {
         Map<String, Object> stats = new LinkedHashMap<>();
 
         try (Connection conn = DBConnection.getConnection()) {
-            // Total flights
             try (Statement st = conn.createStatement();
                  ResultSet rs = st.executeQuery(DBConnection.normalizeSql("SELECT COUNT(*) FROM flights;"))) {
                 stats.put("total_flights", rs.next() ? rs.getInt(1) : 0);
             }
 
-            // Bookings stats
             String bSql = DBConnection.normalizeSql(
                 "SELECT COUNT(*) AS total_bookings, " +
                 "       SUM(CASE WHEN booking_status = 'CONFIRMED' THEN 1 ELSE 0 END) AS confirmed_bookings, " +
@@ -41,13 +39,11 @@ public class AdminDAO {
                 }
             }
 
-            // Total passenger accounts
             try (Statement st = conn.createStatement();
                  ResultSet rs = st.executeQuery(DBConnection.normalizeSql("SELECT COUNT(*) FROM users WHERE role = 'passenger';"))) {
                 stats.put("total_users", rs.next() ? rs.getInt(1) : 0);
             }
 
-            // System-wide seat occupancy %
             String occSql = DBConnection.normalizeSql("SELECT COALESCE(SUM(total_seats), 0) AS total_s, COALESCE(SUM(total_seats - available_seats), 0) AS booked_s FROM flights WHERE status IN ('SCHEDULED', 'ACTIVE');");
             try (Statement st = conn.createStatement();
                  ResultSet rs = st.executeQuery(occSql)) {
@@ -147,7 +143,6 @@ public class AdminDAO {
 
         int durationMinutes = 120; // default estimated
         try {
-            // Rough calculation if format is YYYY-MM-DD HH:MM:SS
             if (depTime.length() >= 16 && arrTime.length() >= 16) {
                 java.time.LocalDateTime d1 = java.time.LocalDateTime.parse(depTime.replace(" ", "T"));
                 java.time.LocalDateTime d2 = java.time.LocalDateTime.parse(arrTime.replace(" ", "T"));
@@ -159,7 +154,6 @@ public class AdminDAO {
         conn.setAutoCommit(false);
 
         try {
-            // Insert Flight
             String sql = DBConnection.normalizeSql(
                 "INSERT INTO flights (flight_number, airline_name, source_airport_id, destination_airport_id, departure_time, arrival_time, duration_minutes, fare, total_seats, available_seats, aircraft_model, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'SCHEDULED');"
@@ -194,10 +188,8 @@ public class AdminDAO {
                 }
             }
 
-            // Generate seats: 8 Business + 48 Economy
             String seatSql = DBConnection.normalizeSql("INSERT INTO seats (flight_id, seat_number, seat_class, is_booked, price_multiplier) VALUES (?, ?, ?, 0, ?);");
             try (PreparedStatement stmt = conn.prepareStatement(seatSql)) {
-                // Business class (Rows 1-2, cols A-D)
                 for (int r = 1; r <= 2; r++) {
                     for (String c : new String[]{"A", "B", "C", "D"}) {
                         stmt.setInt(1, flightId);
@@ -207,7 +199,6 @@ public class AdminDAO {
                         stmt.executeUpdate();
                     }
                 }
-                // Economy class (Rows 3-10, cols A-F)
                 for (int r = 3; r <= 10; r++) {
                     for (String c : new String[]{"A", "B", "C", "D", "E", "F"}) {
                         stmt.setInt(1, flightId);
@@ -346,7 +337,6 @@ public class AdminDAO {
                         b.setPayment(pay);
                     }
 
-                    // Load passengers
                     String paxSql = DBConnection.normalizeSql("SELECT first_name, last_name, seat_number, gender, age FROM passengers WHERE booking_id = ?;");
                     try (PreparedStatement pStmt = conn.prepareStatement(paxSql)) {
                         pStmt.setInt(1, b.getBookingId());
