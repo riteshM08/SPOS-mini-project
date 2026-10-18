@@ -298,13 +298,6 @@
                         </div>
                     </div>
 
-                    <div class="demo-fill-banner">
-                        <div>
-                            <strong>💡 Evaluation Demo Helper:</strong> Fill valid test card credentials with one click.
-                        </div>
-                        <button type="button" class="btn btn-sm btn-primary" onclick="App.fillDemoCard()">Auto-Fill Test Card</button>
-                    </div>
-
                     <div class="payment-methods-tabs">
                         <div class="pay-tab active">💳 Credit / Debit Card</div>
                         <div class="pay-tab">📱 UPI / QR Code</div>
@@ -314,11 +307,11 @@
                     <form id="form-payment" onsubmit="App.handlePaymentSubmit(event)">
                         <div class="form-group" style="margin-bottom:16px;">
                             <label class="form-label">Card Number</label>
-                            <input type="text" id="card-number" class="form-control" placeholder="4532 8841 9021 7742" required>
+                            <input type="text" id="card-number" class="form-control" placeholder="Enter card number" required>
                         </div>
                         <div class="form-group" style="margin-bottom:16px;">
                             <label class="form-label">Cardholder Name</label>
-                            <input type="text" id="card-name" class="form-control" placeholder="Full Name as on card" required>
+                            <input type="text" id="card-name" class="form-control" placeholder="Enter cardholder name" required>
                         </div>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
                             <div class="form-group">
@@ -327,7 +320,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">CVV / CVC</label>
-                                <input type="password" id="card-cvv" class="form-control" placeholder="123" maxlength="4" required>
+                                <input type="password" id="card-cvv" class="form-control" placeholder="CVV" maxlength="4" required>
                             </div>
                         </div>
 
@@ -710,19 +703,19 @@
                 <form id="form-register">
                     <div class="form-group" style="margin-bottom:12px;">
                         <label class="form-label">Full Name</label>
-                        <input type="text" id="reg-name" class="form-control" placeholder="e.g. John Doe" required>
+                        <input type="text" id="reg-name" class="form-control" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group" style="margin-bottom:12px;">
                         <label class="form-label">Email Address</label>
-                        <input type="email" id="reg-email" class="form-control" placeholder="john.doe@example.com" required>
+                        <input type="email" id="reg-email" class="form-control" placeholder="Enter your email address" required>
                     </div>
                     <div class="form-group" style="margin-bottom:12px;">
                         <label class="form-label">Phone Number</label>
-                        <input type="tel" id="reg-phone" class="form-control" placeholder="+1-555-0199">
+                        <input type="tel" id="reg-phone" class="form-control" placeholder="Enter phone number">
                     </div>
                     <div class="form-group" style="margin-bottom:20px;">
                         <label class="form-label">Password (Min 6 chars)</label>
-                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" minlength="6" required>
+                        <input type="password" id="reg-password" class="form-control" placeholder="Create a password" minlength="6" required>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:14px;">Create Passenger Account</button>
                 </form>
