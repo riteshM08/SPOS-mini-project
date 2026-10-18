@@ -1,8 +1,4 @@
-/* ==========================================================================
-   SKYWINGS AIRWAYS - AIRLINE RESERVATION SYSTEM
-   Modern, Premium Airline Travel Interface
-   Palette: Professional Navy Blue (#0a192f, #0f2744), White, & Sky Blue (#0ea5e9)
-   ========================================================================== */
+
 
 :root {
     --primary-navy: #0a192f;
@@ -53,10 +49,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-/* ==========================================================================
-   HEADER & NAVIGATION BAR
-   ========================================================================== */
 
 .navbar {
     background: var(--primary-navy);
@@ -225,10 +217,6 @@ body {
 .role-admin { background: #f59e0b; color: #1e293b; }
 .role-passenger { background: var(--sky-blue); color: #ffffff; }
 
-/* ==========================================================================
-   HERO & SEARCH SECTION
-   ========================================================================== */
-
 .hero-banner {
     background: linear-gradient(180deg, var(--primary-navy) 0%, #1e3a8a 100%);
     padding: 50px 20px 90px;
@@ -343,10 +331,6 @@ select.form-control {
     cursor: pointer;
 }
 
-/* ==========================================================================
-   MAIN CONTENT CONTAINER & VIEWS
-   ========================================================================== */
-
 .main-container {
     max-width: 1240px;
     margin: 0 auto;
@@ -387,10 +371,6 @@ select.form-control {
     color: var(--text-muted);
     font-size: 0.95rem;
 }
-
-/* ==========================================================================
-   FLIGHT CARDS & SEARCH RESULTS
-   ========================================================================== */
 
 .flights-list {
     display: flex;
@@ -547,10 +527,6 @@ select.form-control {
     font-weight: 600;
 }
 
-/* ==========================================================================
-   MULTI-STEP BOOKING WIZARD
-   ========================================================================== */
-
 .booking-stepper {
     display: flex;
     justify-content: space-between;
@@ -614,10 +590,6 @@ select.form-control {
 .step-item.active .step-label {
     color: var(--primary-navy);
 }
-
-/* ==========================================================================
-   INTERACTIVE SEAT SELECTION
-   ========================================================================== */
 
 .seat-selection-wrapper {
     display: grid;
@@ -777,10 +749,6 @@ select.form-control {
     color: var(--primary-navy);
 }
 
-/* ==========================================================================
-   PASSENGER FORMS
-   ========================================================================== */
-
 .pax-card {
     background: #ffffff;
     border-radius: var(--radius-md);
@@ -819,10 +787,6 @@ select.form-control {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
-
-/* ==========================================================================
-   SIMULATED PAYMENT
-   ========================================================================== */
 
 .payment-container {
     max-width: 650px;
@@ -869,10 +833,6 @@ select.form-control {
     font-size: 0.85rem;
     color: #0369a1;
 }
-
-/* ==========================================================================
-   BOARDING PASS / CONFIRMATION
-   ========================================================================== */
 
 .boarding-pass-card {
     max-width: 780px;
@@ -957,10 +917,6 @@ select.form-control {
     width: 220px;
     background: repeating-linear-gradient(90deg, #0f172a 0px, #0f172a 2px, transparent 2px, transparent 4px, #0f172a 4px, #0f172a 7px, transparent 7px, transparent 9px);
 }
-
-/* ==========================================================================
-   ADMIN DASHBOARD
-   ========================================================================== */
 
 .admin-stats-grid {
     display: grid;
@@ -1072,10 +1028,6 @@ select.form-control {
 .status-cancelled { background: var(--danger-light); color: #991b1b; }
 .status-delayed { background: var(--warning-light); color: #92400e; }
 
-/* ==========================================================================
-   MODALS & TOAST NOTIFICATIONS
-   ========================================================================== */
-
 .modal-backdrop {
     display: none;
     position: fixed;
@@ -1165,10 +1117,6 @@ select.form-control {
     to { opacity: 1; transform: translateX(0); }
 }
 
-/* ==========================================================================
-   FOOTER
-   ========================================================================== */
-
 .footer {
     background: var(--primary-navy);
     color: #94a3b8;
@@ -1186,7 +1134,6 @@ select.form-control {
     font-size: 0.85rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
     .search-form-grid {
         grid-template-columns: 1fr;
