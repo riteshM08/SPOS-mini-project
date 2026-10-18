@@ -34,7 +34,6 @@ public class UserDAO {
         );
 
         try (Connection conn = DBConnection.getConnection()) {
-            // Check existing
             try (PreparedStatement checkStmt = conn.prepareStatement(DBConnection.normalizeSql("SELECT user_id FROM users WHERE LOWER(email) = LOWER(?);"))) {
                 checkStmt.setString(1, email);
                 try (ResultSet rs = checkStmt.executeQuery()) {
