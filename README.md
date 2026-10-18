@@ -24,7 +24,7 @@ A complete, full-stack Airline Reservation System built with **Java 17 + JDBC**,
 | Layer      | Technology           |
 |------------|----------------------|
 | Frontend   | HTML5, CSS3, JavaScript (ES6+) — zero external libraries |
-| Backend    | Java 17 (Standard Library only) |
+| Backend    | Java 17 |
 | DB Driver  | JDBC — PostgreSQL driver v42.7.3, SQLite driver v3.45.2 |
 | Database   | PostgreSQL 15+ (primary) / SQLite (automatic fallback) |
 | HTTP Server| `com.sun.net.httpserver.HttpServer` (built-in JDK) |
