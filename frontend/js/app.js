@@ -243,11 +243,6 @@ const App = {
         this.navigate('home');
     },
 
-    fillDemoLogin(email, password) {
-        document.getElementById('login-email').value = email;
-        document.getElementById('login-password').value = password;
-    },
-
     async loadAirports() {
         try {
             const res = await API.getAirports();
@@ -671,14 +666,6 @@ const App = {
         document.getElementById('pay-pax-count').textContent = `${this.state.passengersData.length} Passenger(s)`;
         document.getElementById('pay-seats-list').textContent = this.state.selectedSeats.map(s => s.seat_number).join(', ');
         document.getElementById('pay-amount-total').textContent = `₹${Math.round(total).toLocaleString('en-IN')}`;
-    },
-
-    fillDemoCard() {
-        document.getElementById('card-number').value = '4532 8841 9021 7742';
-        document.getElementById('card-name').value = API.getCurrentUser()?.name || 'John Doe';
-        document.getElementById('card-expiry').value = '12/28';
-        document.getElementById('card-cvv').value = '382';
-        this.showToast('Test payment card details applied.', 'info');
     },
 
     async handlePaymentSubmit(e) {
