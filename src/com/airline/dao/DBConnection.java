@@ -213,8 +213,8 @@ public class DBConnection {
                         "payment_date DATETIME DEFAULT CURRENT_TIMESTAMP);");
 
                 st.execute("INSERT INTO users (name, email, password_hash, salt, role, phone) VALUES " +
-                        "('System Administrator', 'admin@skywings.com', '7d08e5374f44b9628ae04ad5a812ef1092c86c77ab7182f99be7da42d6fcff79', 'somesaltforadmin', 'admin', '+1-800-555-0199')," +
-                        "('John Doe', 'john.doe@example.com', 'f69a00b7195566968c2b2be5a4f4183b6076551f55f0f11e8d70a7f6996e1fe2', 'somesaltforjohn', 'passenger', '+1-555-014-8822')," +
+                        "('System Administrator', 'ritesh@gmail.com', '201e81408f0c53f978733167d7de65e0cc4d717ef0db6814ad19c637a2626850', 'somesaltforadmin', 'admin', '+1-800-555-0199')," +
+                        "('Passenger One', 'passenger1@example.com', 'abc23a6afa9b34205f472496f2ef3b60347849eb2397e35008cfdcdea7e42aa7', 'somesaltforjohn', 'passenger', '+1-555-014-8822')," +
                         "('Jane Smith', 'jane.smith@example.com', 'f69a00b7195566968c2b2be5a4f4183b6076551f55f0f11e8d70a7f6996e1fe2', 'somesaltforjohn', 'passenger', '+1-555-019-3344');");
 
                 st.execute("INSERT INTO airports (airport_code, airport_name, city, country) VALUES " +
