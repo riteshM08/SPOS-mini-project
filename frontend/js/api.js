@@ -1,7 +1,3 @@
-/**
- * Airline Reservation System - API Client Module
- * Communicates with the Java backend using plain Fetch API with zero external dependencies.
- */
 
 const API = {
     BASE_URL: '',
@@ -86,10 +82,6 @@ const API = {
         });
     },
 
-    // ------------------------------------------------------------------------
-    // AUTHENTICATION ENDPOINTS
-    // ------------------------------------------------------------------------
-
     async register(name, email, password, phone) {
         const res = await this.post('/api/auth/register', { name, email, password, phone });
         if (res.user && res.user.token) {
@@ -112,7 +104,6 @@ const API = {
         try {
             await this.post('/api/auth/logout', {});
         } catch (e) {
-            // ignore network logout errors
         }
         this.setToken(null);
         this.setCurrentUser(null);
@@ -121,10 +112,6 @@ const API = {
     async getMe() {
         return this.get('/api/auth/me');
     },
-
-    // ------------------------------------------------------------------------
-    // FLIGHTS & AIRPORTS ENDPOINTS
-    // ------------------------------------------------------------------------
 
     async getAirports() {
         return this.get('/api/airports');
@@ -147,10 +134,6 @@ const API = {
         return this.get(`/api/flights/${flightId}/seats`);
     },
 
-    // ------------------------------------------------------------------------
-    // BOOKINGS ENDPOINTS
-    // ------------------------------------------------------------------------
-
     async createBooking(flightId, passengers, paymentDetails) {
         return this.post('/api/bookings/create', {
             flight_id: flightId,
@@ -170,10 +153,6 @@ const API = {
     async cancelBooking(pnr) {
         return this.post('/api/bookings/cancel', { pnr });
     },
-
-    // ------------------------------------------------------------------------
-    // ADMIN ENDPOINTS
-    // ------------------------------------------------------------------------
 
     async getAdminStats() {
         return this.get('/api/admin/stats');
