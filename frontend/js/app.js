@@ -214,6 +214,8 @@ const App = {
         } catch (err) {
             this.showToast(err.message, 'error');
         } finally {
+            // Do not leave entered credentials sitting in the form.
+            e.target.reset();
             submitBtn.disabled = false;
             submitBtn.textContent = originalButtonText;
         }
@@ -238,6 +240,8 @@ const App = {
         } catch (err) {
             this.showToast(err.message, 'error');
         } finally {
+            // Clear registration details after every attempt.
+            e.target.reset();
             submitBtn.disabled = false;
             submitBtn.textContent = 'Create Passenger Account';
         }
