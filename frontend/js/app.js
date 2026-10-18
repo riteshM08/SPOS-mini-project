@@ -736,7 +736,7 @@ const App = {
     async loadMyBookings() {
         if (!API.isAuthenticated()) {
             this.showToast('Please log in to view your bookings.', 'info');
-            this.openModal('modal-login');
+            this.openModal('modal-passenger-login');
             return;
         }
 
