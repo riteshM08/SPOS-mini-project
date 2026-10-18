@@ -28,7 +28,8 @@
             <div class="nav-auth-group">
                 
                 <div id="nav-guest-group" style="display:flex; gap:10px;">
-                    <button class="btn btn-outline-light btn-sm" onclick="App.openModal('modal-login')">Log In</button>
+                    <button class="btn btn-outline-light btn-sm" onclick="App.openModal('modal-passenger-login')">Passenger Login</button>
+                    <button class="btn btn-outline-light btn-sm" onclick="App.openModal('modal-admin-login')">Admin Login</button>
                     <button class="btn btn-primary btn-sm" onclick="App.openModal('modal-register')">Register</button>
                 </div>
 
@@ -666,29 +667,49 @@
         </section>
     </main>
 
-    <div id="modal-login" class="modal-backdrop">
+    <div id="modal-passenger-login" class="modal-backdrop">
         <div class="modal-dialog">
             <div class="modal-header">
-                <h3>Passenger & Admin Login</h3>
+                <h3>Passenger Login</h3>
                 <button class="modal-close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                
-                                <form id="form-login">
+                <form id="form-passenger-login">
                     <div class="form-group" style="margin-bottom:14px;">
                         <label class="form-label">Email Address</label>
-                        <input type="email" id="login-email" class="form-control" placeholder="Enter your email address" autocomplete="username" required>
+                        <input type="email" id="passenger-login-email" class="form-control" placeholder="Enter your email address" autocomplete="username" required>
                     </div>
                     <div class="form-group" style="margin-bottom:20px;">
                         <label class="form-label">Password</label>
-                        <input type="password" id="login-password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
+                        <input type="password" id="passenger-login-password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:14px;">Log In</button>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:14px;">Log In as Passenger</button>
                 </form>
-
                 <div style="text-align:center; font-size:0.85rem; color:var(--text-muted);">
-                    Don't have an account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-register')">Register here</a>
+                    Don't have a passenger account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-register')">Register here</a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-admin-login" class="modal-backdrop">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Administrator Login</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-admin-login">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label class="form-label">Admin Email Address</label>
+                        <input type="email" id="admin-login-email" class="form-control" placeholder="Enter administrator email" autocomplete="username" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:20px;">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="admin-login-password" class="form-control" placeholder="Enter administrator password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Log In as Admin</button>
+                </form>
             </div>
         </div>
     </div>
@@ -721,7 +742,7 @@
                 </form>
 
                 <div style="text-align:center; font-size:0.85rem; color:var(--text-muted);">
-                    Already have an account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-login')">Log In</a>
+                    Already have an account? <a href="#" style="color:var(--sky-blue); font-weight:600;" onclick="App.openModal('modal-passenger-login')">Log In</a>
                 </div>
             </div>
         </div>
