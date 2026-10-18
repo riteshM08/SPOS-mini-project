@@ -162,7 +162,7 @@ payments        — Simulated payment records per booking
 
 | Role      | Email                     | Password     |
 |-----------|---------------------------|--------------|
-| Admin     | `admin@skywings.com`      | `Admin@123`  |
+| Admin     | `ritesh@gmail.com`        | `Ritesh@123` |
 | Passenger | `john.doe@example.com`    | `Password@123` |
 | Passenger | `jane.smith@example.com`  | `Password@123` |
 
