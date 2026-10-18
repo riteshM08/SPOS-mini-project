@@ -53,7 +53,6 @@ public class BookingHandler implements HttpHandler {
             err.put("error", e.getMessage());
             HandlerHelper.sendJson(exchange, 400, err);
         } catch (IllegalStateException e) {
-            // 409 Conflict for double-booking/seat taken
             Map<String, Object> err = new HashMap<>();
             err.put("error", e.getMessage());
             HandlerHelper.sendJson(exchange, 409, err);
