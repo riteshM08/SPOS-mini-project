@@ -88,6 +88,7 @@ public class DBConnection {
                 if (rs.next()) {
                     System.out.println("[DB] PostgreSQL tables already exist.");
                     try (Statement st = conn.createStatement()) {
+                        st.executeUpdate("UPDATE users SET email='legacy-account-' || user_id || '@local.invalid' WHERE email='ritesh@gmail.com' AND role <> 'admin' AND EXISTS (SELECT 1 FROM users WHERE role='admin' AND email <> 'ritesh@gmail.com')");
                         st.executeUpdate("UPDATE users SET name='System Administrator', email='ritesh@gmail.com', password_hash='201e81408f0c53f978733167d7de65e0cc4d717ef0db6814ad19c637a2626850', salt='somesaltforadmin', role='admin' WHERE role='admin'");
                         st.executeUpdate("UPDATE users SET name='Passenger One', email='passenger1@example.com', password_hash='abc23a6afa9b34205f472496f2ef3b60347849eb2397e35008cfdcdea7e42aa7', salt='somesaltforjohn', role='passenger' WHERE email='john.doe@example.com'");
                     }
@@ -137,6 +138,7 @@ public class DBConnection {
             try (ResultSet rs = meta.getTables(null, null, "users", new String[]{"TABLE"})) {
                 if (rs.next()) {
                     try (Statement st = conn.createStatement()) {
+                        st.executeUpdate("UPDATE users SET email='legacy-account-' || user_id || '@local.invalid' WHERE email='ritesh@gmail.com' AND role <> 'admin' AND EXISTS (SELECT 1 FROM users WHERE role='admin' AND email <> 'ritesh@gmail.com')");
                         st.executeUpdate("UPDATE users SET name='System Administrator', email='ritesh@gmail.com', password_hash='201e81408f0c53f978733167d7de65e0cc4d717ef0db6814ad19c637a2626850', salt='somesaltforadmin', role='admin' WHERE role='admin'");
                         st.executeUpdate("UPDATE users SET name='Passenger One', email='passenger1@example.com', password_hash='abc23a6afa9b34205f472496f2ef3b60347849eb2397e35008cfdcdea7e42aa7', salt='somesaltforjohn', role='passenger' WHERE email='john.doe@example.com'");
                     }
