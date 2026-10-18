@@ -1,9 +1,3 @@
-/**
- * SkyWings Airways - Main Application Logic
- * Single Page Application controller handling Search, Booking Wizard,
- * Interactive Cabin Seat Map, Passenger Forms, Payment Simulation,
- * My Bookings, Cancellation, and Admin Portal.
- */
 
 const App = {
     state: {
@@ -18,16 +12,11 @@ const App = {
         trackerFlightId: null
     },
 
-    // =========================================================================
-    // INITIALIZATION & ROUTING
-    // =========================================================================
-
     async init() {
         this.bindEvents();
         this.updateAuthUI();
         await this.loadAirports();
 
-        // Set default departure date to today
         const todayStr = new Date().toISOString().split('T')[0];
         const dateInput = document.getElementById('search-dep-date');
         if (dateInput) {
@@ -35,7 +24,6 @@ const App = {
             dateInput.min = todayStr;
         }
 
-        // Check if there's a deep hash or default to home
         const hash = window.location.hash.replace('#', '') || 'home';
         this.navigate(hash);
     },
@@ -53,7 +41,6 @@ const App = {
         const navLink = document.querySelector(`.nav-links a[data-navigate="${viewId}"]`);
         if (navLink) navLink.classList.add('active');
 
-        // View-specific loaders
         if (viewId === 'my-bookings') {
             this.loadMyBookings();
         } else if (viewId === 'admin') {
@@ -68,7 +55,6 @@ const App = {
     },
 
     bindEvents() {
-        // Navigation clicks
         document.querySelectorAll('[data-navigate]').forEach(el => {
             el.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -77,7 +63,6 @@ const App = {
             });
         });
 
-        // Search Form Submit
         const searchForm = document.getElementById('flight-search-form');
         if (searchForm) {
             searchForm.addEventListener('submit', (e) => {
@@ -86,7 +71,6 @@ const App = {
             });
         }
 
-        // Airport route swapper
         const swapBtn = document.getElementById('btn-swap-airports');
         if (swapBtn) {
             swapBtn.addEventListener('click', () => {
@@ -98,7 +82,6 @@ const App = {
             });
         }
 
-        // Passenger count change in search form
         const paxSelect = document.getElementById('search-passengers');
         if (paxSelect) {
             paxSelect.addEventListener('change', () => {
@@ -106,7 +89,6 @@ const App = {
             });
         }
 
-        // Auth Form Submissions
         const loginForm = document.getElementById('form-login');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
@@ -117,7 +99,6 @@ const App = {
             regForm.addEventListener('submit', (e) => this.handleRegister(e));
         }
 
-        // Modal close buttons
         document.querySelectorAll('.modal-close-btn, .modal-backdrop').forEach(el => {
             el.addEventListener('click', (e) => {
                 if (e.target === el) {
@@ -126,7 +107,6 @@ const App = {
             });
         });
 
-        // Admin Tab Buttons
         document.querySelectorAll('.admin-tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
@@ -145,10 +125,6 @@ const App = {
             });
         });
     },
-
-    // =========================================================================
-    // TOAST NOTIFICATIONS
-    // =========================================================================
 
     showToast(message, type = 'info') {
         const container = document.getElementById('toast-container');
@@ -169,10 +145,6 @@ const App = {
         }, 4000);
     },
 
-    // =========================================================================
-    // MODAL HELPERS
-    // =========================================================================
-
     openModal(modalId) {
         this.closeModals();
         const m = document.getElementById(modalId);
@@ -182,10 +154,6 @@ const App = {
     closeModals() {
         document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
     },
-
-    // =========================================================================
-    // AUTHENTICATION & PROFILE
-    // =========================================================================
 
     updateAuthUI() {
         const user = API.getCurrentUser();
@@ -275,15 +243,10 @@ const App = {
         this.navigate('home');
     },
 
-    // Pre-fill demo credentials
     fillDemoLogin(email, password) {
         document.getElementById('login-email').value = email;
         document.getElementById('login-password').value = password;
     },
-
-    // =========================================================================
-    // AIRPORTS & FLIGHT SEARCH
-    // =========================================================================
 
     async loadAirports() {
         try {
@@ -426,10 +389,6 @@ const App = {
         });
     },
 
-    // =========================================================================
-    // MULTI-STEP BOOKING WIZARD
-    // =========================================================================
-
     async startBookingFlow(flightId) {
         if (!API.isAuthenticated()) {
             this.showToast('Please log in or register to book a ticket.', 'info');
@@ -473,10 +432,6 @@ const App = {
         document.getElementById('step-panel-confirmation').style.display = (step === 5) ? 'block' : 'none';
     },
 
-    // =========================================================================
-    // SEAT SELECTION
-    // =========================================================================
-
     async loadSeatMap(flightId) {
         const cabinContainer = document.getElementById('cabin-seats-grid');
         cabinContainer.innerHTML = '<div style="text-align:center; padding:20px;">Loading live seat layout...</div>';
@@ -487,7 +442,6 @@ const App = {
 
             cabinContainer.innerHTML = '';
 
-            // Group seats by row number
             const rowMap = new Map();
             seats.forEach(s => {
                 const rowNum = parseInt(s.seat_number.replace(/\D/g, ''), 10);
@@ -495,7 +449,6 @@ const App = {
                 rowMap.get(rowNum).push(s);
             });
 
-            // Render Business Section (Rows 1-2)
             const bizHeader = document.createElement('div');
             bizHeader.className = 'cabin-section-title';
             bizHeader.textContent = '★ Business Class (Rows 1-2)';
@@ -507,7 +460,6 @@ const App = {
                 }
             }
 
-            // Render Economy Section (Rows 3-10)
             const ecoHeader = document.createElement('div');
             ecoHeader.className = 'cabin-section-title';
             ecoHeader.textContent = '✈ Economy Class (Rows 3-10)';
@@ -533,11 +485,8 @@ const App = {
         rowLabel.textContent = rowNum;
         rowDiv.appendChild(rowLabel);
 
-        // Sort seats A, B, C, D, E, F
         rowSeats.sort((a, b) => a.seat_number.localeCompare(b.seat_number));
 
-        // In Business: A, B [aisle] C, D
-        // In Economy: A, B, C [aisle] D, E, F
         const splitIndex = isBusiness ? 2 : 3;
 
         rowSeats.forEach((s, idx) => {
@@ -566,11 +515,9 @@ const App = {
         const existsIdx = this.state.selectedSeats.findIndex(s => s.seat_id === seat.seat_id);
 
         if (existsIdx > -1) {
-            // Deselect
             this.state.selectedSeats.splice(existsIdx, 1);
             element.classList.remove('seat-selected');
         } else {
-            // Check capacity limit
             if (this.state.selectedSeats.length >= this.state.passengerCount) {
                 this.showToast(`You have selected the maximum of ${this.state.passengerCount} seat(s). Deselect a seat to change.`, 'warning');
                 return;
@@ -593,7 +540,6 @@ const App = {
         const seatListStr = this.state.selectedSeats.map(s => s.seat_number).join(', ') || 'None selected';
         document.getElementById('summary-seats-list').textContent = seatListStr;
 
-        // Calculate total price
         let total = 0;
         this.state.selectedSeats.forEach(s => {
             total += f.fare * (s.price_multiplier || 1.0);
@@ -605,7 +551,6 @@ const App = {
         document.getElementById('summary-base-fare').textContent = `₹${(f.fare * this.state.passengerCount).toLocaleString('en-IN')}`;
         document.getElementById('summary-total-fare').textContent = `₹${Math.round(total).toLocaleString('en-IN')}`;
 
-        // Enable or disable continue button
         const continueBtn = document.getElementById('btn-continue-to-passengers');
         if (continueBtn) {
             continueBtn.disabled = (this.state.selectedSeats.length !== this.state.passengerCount);
@@ -626,10 +571,6 @@ const App = {
         this.buildPassengerForms();
         this.setBookingStep(3);
     },
-
-    // =========================================================================
-    // PASSENGER INFORMATION
-    // =========================================================================
 
     buildPassengerForms() {
         const container = document.getElementById('passengers-form-container');
@@ -715,14 +656,9 @@ const App = {
 
         this.state.passengersData = passengers;
 
-        // Render Payment Breakdown
         this.renderPaymentScreen();
         this.setBookingStep(4);
     },
-
-    // =========================================================================
-    // SIMULATED PAYMENT
-    // =========================================================================
 
     renderPaymentScreen() {
         const f = this.state.selectedFlight;
@@ -768,7 +704,6 @@ const App = {
 
         } catch (err) {
             this.showToast('Booking failed: ' + err.message, 'error');
-            // If seat conflict occurred, go back to seat selection
             if (err.status === 409) {
                 setTimeout(() => {
                     this.setBookingStep(2);
@@ -780,10 +715,6 @@ const App = {
             payBtn.textContent = 'Pay & Confirm Reservation';
         }
     },
-
-    // =========================================================================
-    // CONFIRMATION & BOARDING PASS
-    // =========================================================================
 
     renderConfirmation(booking) {
         document.getElementById('confirm-pnr').textContent = booking.pnr;
@@ -807,10 +738,6 @@ const App = {
     printBoardingPass() {
         window.print();
     },
-
-    // =========================================================================
-    // MY BOOKINGS & CANCELLATION
-    // =========================================================================
 
     async loadMyBookings() {
         if (!API.isAuthenticated()) {
@@ -923,10 +850,6 @@ const App = {
         }
     },
 
-    // =========================================================================
-    // ADMIN DASHBOARD
-    // =========================================================================
-
     async loadAdminDashboard() {
         try {
             const res = await API.getAdminStats();
@@ -940,7 +863,6 @@ const App = {
             document.getElementById('stat-occupancy-rate').textContent = `${s.occupancy_rate || 0}%`;
             document.getElementById('stat-total-users').textContent = s.total_users || 0;
 
-            // Load default tab
             if (this.state.activeAdminTab === 'flights') {
                 this.loadAdminFlights();
             } else if (this.state.activeAdminTab === 'bookings') {
@@ -1179,7 +1101,6 @@ const App = {
                 </div>
             `;
 
-            // Render rows
             const rowsContainer = container.querySelector('#tracker-seat-rows');
             const rowMap = new Map();
             seats.forEach(s => {
@@ -1220,7 +1141,6 @@ const App = {
             document.getElementById('sched-atat-val').textContent = `${data.avg_turnaround_time} ms`;
             document.getElementById('sched-total-time-val').textContent = `${data.total_completion_time} ms`;
 
-            // Render Gantt Chart
             const ganttBox = document.getElementById('sched-gantt-container');
             if (ganttBox && data.gantt_chart) {
                 ganttBox.innerHTML = '';
@@ -1256,7 +1176,6 @@ const App = {
                 });
             }
 
-            // Render Process Table
             const tbody = document.getElementById('sched-process-table-body');
             if (tbody && data.processes) {
                 tbody.innerHTML = '';
@@ -1281,5 +1200,4 @@ const App = {
     }
 };
 
-// Bootstrap application on DOM ready
 document.addEventListener('DOMContentLoaded', () => App.init());
